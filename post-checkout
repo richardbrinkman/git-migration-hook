@@ -22,24 +22,14 @@ if [ $flag -eq 0 ]; then
 fi
 
 for ref in `git rev-list $newref..$oldref`; do
-	tree=`git cat-file commit $ref | head -n1 | cut -f2 -d' '`
-	IFS=" \t" git cat-file -p $tree | while read perms type sha path; do
-		if [ "$path" = $MIGRATION_PATH ]; then
-			IFS=" \t" git cat-file -p $sha | grep down.sql\$ | sort -r -k2 | while read p t s f; do
-				echo "-- $f"
-				git cat-file -p $s | $OUTPUT
-			done
-		fi
+	git show --pretty=oneline --name-only $ref | tail -n +2 | grep ^$MIGRATION_PATH | grep down.sql\$ | sort -r | while read file; do
+		echo "--" $file
+		git show $ref:$file | $OUTPUT
 	done
 done
 for ref in `git rev-list --reverse $oldref..$newref`; do
-	tree=`git cat-file commit $ref | head -n1 | cut -f2 -d' '`
-	IFS=" \t" git cat-file -p $tree | while read perms type sha path; do
-		if [ "$path" = $MIGRATION_PATH ]; then
-			IFS=" \t" git cat-file -p $sha | grep up.sql\$ | sort -k2 | while read p t s f; do
-				echo "-- $f"
-				git cat-file -p $s | $OUTPUT
-			done
-		fi
+	git show --pretty=oneline --name-only $ref | tail -n +2 | grep ^$MIGRATION_PATH | grep up.sql\$ | sort | while read file; do
+		echo "--" $file
+		git show $ref:$file | $OUTPUT
 	done
 done
