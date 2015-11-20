@@ -36,7 +36,7 @@ for ref in `git rev-list --reverse $oldref..$newref`; do
 	tree=`git cat-file commit $ref | head -n1 | cut -f2 -d' '`
 	IFS=" \t" git cat-file -p $tree | while read perms type sha path; do
 		if [ "$path" = $MIGRATION_PATH ]; then
-			IFS=" \t" git cat-file -p $sha | grep up.sql\$ | sort -r -k2 | while read p t s f; do
+			IFS=" \t" git cat-file -p $sha | grep up.sql\$ | sort -k2 | while read p t s f; do
 				echo "-- $f"
 				git cat-file -p $s | $OUTPUT
 			done
