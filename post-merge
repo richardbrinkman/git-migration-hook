@@ -1,0 +1,28 @@
+#!/bin/sh
+
+#************* Configuration **************
+
+#Set the MIGRATION_PATH to the directory where you store all the *{up,down}.sql files
+MIGRATION_PATH="migrations"
+
+#Set the script where the sql queries should be piped to, for example:
+#OUTPUT="mysql --host=127.0.0.1 --user=root --password=mypassword --database=mydatabase"
+#defaults to show only:
+OUTPUT="cat"
+
+#********** End of configuration **********
+
+git cat-file -p HEAD | grep ^parent | (
+	read type leftcommit
+	read type rightcommit
+	if [ "$rightcommit" = "" ]; then #Fast forward merge
+		leftcommit="HEAD@{1}"
+		rightcommit="HEAD"
+	fi
+	for ref in `git rev-list --reverse $leftcommit..$rightcommit`; do
+		git show --pretty=oneline --name-only $ref | tail -n +2 | grep ^$MIGRATION_PATH | grep up.sql\$ | sort | while read file; do
+			echo "--" $file
+			git show $ref:$file | $OUTPUT
+		done
+	done
+)
