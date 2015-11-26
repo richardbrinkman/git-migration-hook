@@ -1,5 +1,9 @@
 #!/bin/sh
 
+#This git-migration-hook originated from https://github.com/richardbrinkman/git-migration-hook
+#where you can find the newest version. If you have an improved version, feel free to generate
+#a pull request.
+
 #************* Configuration **************
 
 #Set the MIGRATION_PATH to the directory where you store all the *{up,down}.sql files
