@@ -50,8 +50,8 @@ git cat-file -p HEAD | grep ^parent | (
 	fi
 	for ref in `git rev-list --reverse $leftcommit..$rightcommit`; do
 		git show --pretty=oneline --name-only $ref | tail -n +2 | grep ^$MIGRATION_PATH | grep up.sql\$ | sort | while read file; do
-			echo "--" $file
-			git show $ref:$file | $OUTPUT
+			echo "--" "$file"
+			git show $ref:"$file" | $OUTPUT
 		done
 	done
 )

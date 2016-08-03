@@ -52,13 +52,13 @@ fi
 
 for ref in `git rev-list $newref..$oldref`; do
 	git show --pretty=oneline --name-only $ref | tail -n +2 | grep ^$MIGRATION_PATH | grep down.sql\$ | sort -r | while read file; do
-		echo "--" $file
-		git show $ref:$file | $OUTPUT
+		echo "--" "$file"
+		git show $ref:"$file" | $OUTPUT
 	done
 done
 for ref in `git rev-list --reverse $oldref..$newref`; do
 	git show --pretty=oneline --name-only $ref | tail -n +2 | grep ^$MIGRATION_PATH | grep up.sql\$ | sort | while read file; do
-		echo "--" $file
-		git show $ref:$file | $OUTPUT
+		echo "--" "$file"
+		git show $ref:"$file" | $OUTPUT
 	done
 done
