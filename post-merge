@@ -34,6 +34,13 @@ OUTPUT="cat"
 
 #********** End of configuration **********
 
+#test if migration path is valid.
+if [ ! -d "$MIGRATION_PATH" ]; then
+  echo '*** GIT-MIGRATION-HOOK: directory for migrations does not exist.'
+  echo '***                     The path is configurable and is currently gitRoot"/'$MIGRATION_PATH
+  exit -1
+fi
+
 git cat-file -p HEAD | grep ^parent | (
 	read type leftcommit
 	read type rightcommit
