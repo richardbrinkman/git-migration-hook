@@ -34,6 +34,13 @@ OUTPUT="cat"
 
 #********** End of configuration **********
 
+#test if migration path is valid.
+if [ ! -d "$MIGRATION_PATH" ]; then
+  echo '*** GIT-MIGRATION-HOOK: directory for migrations does not exist.'
+  echo '***                     The path is configurable and is currently gitRoot/'$MIGRATION_PATH
+  exit -1
+fi
+
 git cat-file -p HEAD | grep ^parent | (
 	read type leftcommit
 	read type rightcommit
@@ -43,8 +50,8 @@ git cat-file -p HEAD | grep ^parent | (
 	fi
 	for ref in `git rev-list --reverse $leftcommit..$rightcommit`; do
 		git show --pretty=oneline --name-only $ref | tail -n +2 | grep ^$MIGRATION_PATH | grep up.sql\$ | sort | while read file; do
-			echo "--" $file
-			git show $ref:$file | $OUTPUT
+			echo "--" "$file"
+			git show $ref:"$file" | $OUTPUT
 		done
 	done
 )
