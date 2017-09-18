@@ -28,12 +28,12 @@ The workflow is as follows:
    1. find all *-up.sql scripts in the commits from ```master..feature```
    2. execute those scripts with the local database
 
-##Install
+## Install
 Simply copy the post-checkout and/or post-merge file to the .git/hooks
 directory of your own git repository. You can edit the config section of those
 files. See the files themselves for an explanation.
 
-##Usage
+## Usage
 The naming of the migration SQL files is crucial. They should end with
 ```up.sql``` or ```down.sql```. The rest of the name is completely up to you.
 However if you have a single commit with multiple up-migrations and/or multiple
@@ -44,7 +44,7 @@ always be called in the same (reverse) order as the commits.
 It's not a requirement that you have both an up-migration and a down-upgrade,
 nor is it a requirement that up- and down-migrations are named similar.
 
-##Warning
+## Warning
 Although most data will remain intact when migrating from one branch to
 another, some data might get lost. If your feature branch has an extra table
 or field, then the complete table or field (including the data you have
